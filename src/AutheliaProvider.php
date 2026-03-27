@@ -14,7 +14,8 @@ class AutheliaProvider extends Provider
     public function icon(): string { return 'fas fa-lock'; }
     public function type(): string { return 'openid'; }
     public function link(): string { return 'https://www.authelia.org'; }
-
+    public function pkceEnabled(): bool { return true; }
+  
     public function fields(): array
     {
         return [
