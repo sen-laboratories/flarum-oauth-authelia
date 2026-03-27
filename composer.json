@@ -1,0 +1,34 @@
+{
+    "name": "sen-labs/oauth-authelia",
+    "description": "Native Authelia OIDC integration for Flarum 2.0",
+    "keywords": ["flarum", "oauth", "authelia", "oidc", "openid", "sso"],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gregor Rosenauer",
+            "email": "gregor.rosenauer@gmail.com",
+            "homepage": "https://sen-labs.org"
+        }
+    ],
+    "require": {
+        "flarum/core": "^2.0",
+        "fof/oauth": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SenLabs\\OAuth\\Authelia\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Authelia OAuth",
+            "category": "auth",
+            "icon": {
+                "name": "fas fa-lock",
+                "backgroundColor": "#1d243d",
+                "color": "#00b0f0"
+            }
+        }
+    }
+}

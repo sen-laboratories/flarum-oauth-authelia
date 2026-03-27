@@ -1,0 +1,20 @@
+fof-oauth:
+  forum:
+    log_in:
+      with_authelia_button: Anmelden mit Authelia
+  lib:
+    providers:
+      authelia: Authelia
+  admin:
+    settings:
+      providers:
+        authelia:
+          description: Authelia OIDC Provider für Flarum. Verbindung zu Ihrer selbst gehosteten Authelia-Instanz.
+          client_id_label: Client ID
+          client_secret_label: Client Secret
+          base_url_label: Externe Basis URL (z.B. https://oni.sen-labs.org)
+          internal_url_label: Interne Basis URL (optional, z.B. http://authelia:9091)
+          redirect_path_label: Pfad für Weiterleitung (optional, standardmäßig /tags)
+          redirect_path_help: Pfad zur Weiterleitung nach erfolgreicher Authentifizierung.
+          scopes_label: Scopes (optional, Standard 'openid profile email groups')
+          scopes_help: OIDC Scopes getrennt durch Leerzeichen. Eigene Scopes wie 'sen' für zusätzliche Claims hinzufügen.
