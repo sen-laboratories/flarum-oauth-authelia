@@ -48,32 +48,29 @@ class AutheliaProvider extends Provider
         ]);
     }
 
-    public function suggestions(Registration $registration, $user, string $token): void
-    {
-        $url  = resolve(UrlGenerator::class);
-        $data = $user->toArray();
+public function suggestions(Registration $registration, $user, string $token): void
+{
+    $url  = resolve(UrlGenerator::class);
+    $data = $user->toArray();
 
-        // Authelia returns standard OIDC claims:
-        //   sub, preferred_username, name, email, email_verified, groups
-        // Plus custom claims from our 'sen' scope:
-        //   country, topics, is_admin
-        $rawUsername = $data['preferred_username']
-            ?? $data['name']
-            ?? explode('@', $data['email'] ?? '')[0];
+    $rawUsername = $data['preferred_username']
+        ?? $data['name']
+        ?? explode('@', $data['email'] ?? 'unknown')[0];
 
-        // Sanitize: Flarum usernames can't have dots
-        $username = str_replace('.', '-', $rawUsername);
+    $username = str_replace('.', '-', $rawUsername);
 
-        $registration
-            ->provideTrustedEmail($data['email'])
-            ->provide('username', $username);
-
-        $targetPath = $this->getSetting('redirect_path') ?: 'tags';
-        $payload = array_merge($data, [
-            'redirectTo' => $url->to('forum')->path($targetPath),
-            'source'     => 'authelia',
-        ]);
-
-        $registration->setPayload($payload);
+    if (!empty($data['email'])) {
+        $registration->provideTrustedEmail($data['email']);
     }
+
+    $registration->provide('username', $username);
+
+    $targetPath = $this->getSetting('redirect_path') ?: 'tags';
+    $payload = array_merge($data, [
+        'redirectTo' => $url->to('forum')->path($targetPath),
+        'source'     => 'authelia',
+    ]);
+
+    $registration->setPayload($payload);
 }
+
