@@ -48,29 +48,29 @@ class AutheliaProvider extends Provider
         ]);
     }
 
-public function suggestions(Registration $registration, $user, string $token): void
-{
-    $url  = resolve(UrlGenerator::class);
-    $data = $user->toArray();
+    public function suggestions(Registration $registration, $user, string $token): void
+    {
+        $url  = resolve(UrlGenerator::class);
+        $data = $user->toArray();
 
-    $rawUsername = $data['preferred_username']
-        ?? $data['name']
-        ?? explode('@', $data['email'] ?? 'unknown')[0];
+        $rawUsername = $data['preferred_username']
+            ?? $data['name']
+            ?? explode('@', $data['email'] ?? 'unknown')[0];
 
-    $username = str_replace('.', '-', $rawUsername);
+        $username = str_replace('.', '-', $rawUsername);
 
-    if (!empty($data['email'])) {
-        $registration->provideTrustedEmail($data['email']);
+        if (!empty($data['email'])) {
+            $registration->provideTrustedEmail($data['email']);
+        }
+
+        $registration->provide('username', $username);
+
+        $targetPath = $this->getSetting('redirect_path') ?: 'tags';
+        $payload = array_merge($data, [
+            'redirectTo' => $url->to('forum')->path($targetPath),
+            'source'     => 'authelia',
+        ]);
+
+        $registration->setPayload($payload);
     }
-
-    $registration->provide('username', $username);
-
-    $targetPath = $this->getSetting('redirect_path') ?: 'tags';
-    $payload = array_merge($data, [
-        'redirectTo' => $url->to('forum')->path($targetPath),
-        'source'     => 'authelia',
-    ]);
-
-    $registration->setPayload($payload);
 }
-
