@@ -12,10 +12,15 @@ Adapted from [sen-labs/oauth-authentik](https://github.com/sen-laboratories/flar
 
 ## Installation
 
+The extension is not on Packagist, add the repository first:
+
 ```bash
+composer config repositories.sen-labs vcs https://github.com/sen-laboratories/flarum-oauth-authelia.git
 composer require sen-labs/oauth-authelia:"*"
 php flarum cache:clear
 ```
+
+The [docker-flarum](https://github.com/sen-laboratories/docker-flarum) image has it built in.
 
 For local/Docker development, add as a path repository:
 
