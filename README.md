@@ -6,7 +6,7 @@ Adapted from [sen-labs/oauth-authentik](https://github.com/sen-laboratories/flar
 
 ## Requirements
 
-- Flarum 2.0 (beta.8+)
+- Flarum 2.0
 - fof/oauth 2.0
 - An Authelia instance with OIDC configured
 
@@ -39,6 +39,12 @@ In the Flarum admin panel under **Extensions → OAuth → Authelia**:
 | Internal Base URL | `http://authelia:9091` (optional, for Docker networking) |
 | Scopes | `openid profile email groups sen` (optional, add custom scopes) |
 | Redirect Path | `/tags` (optional, post-login redirect) |
+
+## Email trust
+
+The address from Authelia is treated as verified (the user does not have to confirm it again) unless the
+`email_verified` claim is explicitly `false`; then it is only suggested at sign-up. This is the same decision FoF OAuth
+uses for its optional email sync after login (`fof-oauth.update_email_from_provider`), through `getProviderVerifiedEmail()`.
 
 ## Authelia OIDC Client Config
 

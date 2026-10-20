@@ -48,7 +48,28 @@ class AutheliaProvider extends Provider
         ]);
     }
 
-    public function suggestions(Registration $registration, $user, string $token): void
+    /**
+     * The single decision on email trust (see FoF OAuth "email trust"): used for sign-up below and by the
+     * post-login email sync (`fof-oauth.update_email_from_provider`).
+     *
+     * Authelia takes the address from its user backend, so it is trusted unless the `email_verified` claim
+     * says otherwise. The raw claim is read, so a string "false" is not mistaken for a truthy value.
+     */
+    public function getProviderVerifiedEmail(mixed $user, string $token): ?string
+    {
+        $data  = $user->toArray();
+        $email = $data['email'] ?? null;
+
+        if (empty($email)) {
+            return null;
+        }
+
+        $verified = $data['email_verified'] ?? true;
+
+        return ($verified === false || $verified === 'false') ? null : $email;
+    }
+
+    public function suggestions(Registration $registration, mixed $user, string $token): void
     {
         $url  = resolve(UrlGenerator::class);
         $data = $user->toArray();
@@ -60,7 +81,11 @@ class AutheliaProvider extends Provider
         $username = str_replace('.', '-', $rawUsername);
 
         if (!empty($data['email'])) {
-            $registration->provideTrustedEmail($data['email']);
+            if ($this->getProviderVerifiedEmail($user, $token) !== null) {
+                $registration->provideTrustedEmail($data['email']);
+            } else {
+                $registration->suggestEmail($data['email']);
+            }
         }
 
         $registration->provide('username', $username);
